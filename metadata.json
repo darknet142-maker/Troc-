@@ -1,0 +1,6 @@
+{
+  "name": "Fast-Troc Libreville",
+  "description": "Bourse d'échange mobile à exécution instantanée pilotable à un seul pouce : troquez en 3 secondes par palier de valeur (10k, 25k, 50k, 100k+ FCFA) avec garantie Jeton 300 FCFA et Ticket Officiel WhatsApp.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
