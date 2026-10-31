@@ -75,16 +75,15 @@ export const MmediaUniverseHub: React.FC = () => {
       {/* APPLICATION ACTIVE : BOO */}
       <div className="uhd-card rounded-2xl p-3 border border-[#ff6b00]/40 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-xl bg-[#161922] border border-[#ff6b00]/40 flex items-center justify-center p-1.5 shrink-0">
-            <BooLogo className="w-full h-auto" />
+          <div className="h-10 px-2.5 rounded-xl bg-[#161922] border border-[#ff6b00]/40 flex items-center justify-center shrink-0">
+            <BooLogo className="h-5 w-auto" />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-black text-white">Boo</span>
-              <span className="text-[10px] text-gray-400">· Troc & Achat Instantané</span>
-            </div>
+            <span className="text-xs font-black text-white block truncate">
+              Troc & Achat Instantané
+            </span>
             <p className="text-[11px] text-gray-400 truncate">
-              Une initiative du Groupe Mmedia Universe
+              Une initiative du Groupe <strong className="text-white font-bold">Mmedia Universe</strong>
             </p>
           </div>
         </div>

@@ -1,79 +1,64 @@
-# Boo — Filtre Sémantique Ultra-Intelligent, Signature avec Mini Logo Boo & Espace Exclusif Mmedia Universe
+# Boo — Parcours de Récompense Quotidienne (7 Jours) & Espace Dédié Mmedia Universe dans Profil
 
-Cette mise à jour dote **Boo** d'un **moteur de recherche et de filtrage linguistique ultra-intelligent (100% déterministe, sans IA)** capable de comprendre les familles de mots, synonymes locaux, pluriels, accents et fautes de frappe (*ex. écran = ecran = écrans = moniteur = pouce = tv = télévision = télé*), remplace la signature par **`© 2026 [Mini Logo Boo] · Une initiative du Groupe Mmedia Universe. Tous droits réservés.`** (sans le mot *« Technologies »*), et crée un **Espace Exclusif Mmedia Universe** dédié à **VYBZ** (**« Découvrez VYBZ »**) et aux futures applications du groupe en cours de développement.
+Cette mise à jour intègre un **système de récompense d'assiduité sur 7 jours** permettant aux utilisateurs réguliers de gagner gratuitement des **Jetons** et des **Pass Coupe-File** grâce à leurs connexions quotidiennes, et réorganise l'onglet **Profil** en retirant `Apps` de la barre des menus pour lui offrir **son propre espace dédié juste sous la carte d'identité utilisateur**.
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> Vos choix confirmés ont été intégrés dans l'architecture :
+> Vos choix confirmés sont intégrés dans ce plan :
 
-- **Moteur de Filtre Sémantique & Tolérant aux Fautes (Sans IA)** :
-  - Équivalence totale entre singulier/pluriel, avec/sans accents, fautes de frappe (distance d'édition de Levenshtein & phonétique) et **familles de mots complètes** :
-    - `écran = ecran = écrans = ecrans = moniteur = moniteurs = pouce = pouces = tv = télévision = television = télé = tele = dalle = full hd`
-    - Et 7 autres grandes familles lexicales couvrant tous les objets du quotidien au Gabon (*Téléphonie, Audio/Baffles/Casques, Gaming/Consoles, Électroménager/Cuisine, Mode/Sneakers/Montres, Photo/Créateurs, Informatique*).
-- **Signature Officielle avec Mini Logo Boo (Sans « Technologies »)** :
-  - Suppression du mot *« Technologies »*.
-  - Intégration d'un **très mini logo vectoriel Boo** directement dans la signature en bas de page :
-    **`© 2026 [Logo Boo] · Une initiative du Groupe Mmedia Universe. Tous droits réservés.`**
-- **Espace Exclusif Dédié aux Applications du Groupe Mmedia Universe** :
-  - Accessible depuis un **onglet dédié dans `Profil` (`Apps`)** ainsi que via un **accès rapide ouvrant la vitrine plein écran Mmedia Universe**.
-  - Met en vedette **VYBZ** avec le bouton court et direct **`Découvrez VYBZ`** (sans jamais afficher d'URL brute) et présente une **grille évolutive de cartes Teaser (*« En développement »*)** pour les prochaines applications du Groupe Mmedia Universe.
+- **Parcours de Connexion Quotidienne sur 7 Jours (Fidélité & Cadeaux Gratuits)** :
+  - **Jour 1 & Jour 2** : Validation de présence quotidienne sur la piste de progression.
+  - **Jour 3 (Cadeau 1)** : **🎁 +1 Jeton Gratuit** crédité immédiatement.
+  - **Jour 4** : Validation de présence vers le prochain palier.
+  - **Jour 5 (Cadeau 2)** : **🚀 +1 Pass Prioritaire « Coupe-File » Gratuit**.
+  - **Jour 6** : Dernière étape avant le grand coffre.
+  - **Jour 7 (Super Coffre Assiduité)** : **🏆 +2 Jetons Gratuits** (puis nouveau cycle de 7 jours).
+  - Un mode **« Simuler le jour suivant »** est inclus dans la fenêtre du parcours afin que vous puissiez tester et vérifier les 7 jours et chaque cadeau en quelques secondes.
+- **Barre des menus du `Profil` désaturée + Espace Mmedia Universe indépendant** :
+  - Retrait de l'onglet `Apps` de la barre des sous-menus du Profil, qui retrouve ses **4 onglets équilibrés** : **`Historique | Objets | FAQ | Légal`**.
+  - Création d'une **Carte Espace Mmedia Universe dédiée**, placée **juste sous la carte d'identité du Profil**, permettant en 1 clic soit de lancer **`Découvrez VYBZ`**, soit d'ouvrir la **Vitrine Plein Écran des Applications Mmedia Universe** (applications en ligne et applications du groupe en développement).
 
 ---
 
 ## 1. Overview & Core Concept
 
-- **What It Does**: Transforme la recherche du Marché en un filtre lexical intelligent qui comprend instantanément l'intention de l'utilisateur même avec des fautes ou des synonymes, ancre la signature visuelle de **Boo**, et offre un véritable hub dédié à l'écosystème d'applications **Mmedia Universe**.
-- **Target Audience / Persona**: Utilisateurs mobiles au Gabon qui tapent rapidement d'une seule main (*sans accents, avec abréviations ou synonymes locaux comme « télé », « baffle », « frigo », « basket »*) et souhaitent découvrir les applications du groupe Mmedia Universe dans un espace soigné.
-- **Key Value**: Zéro impasse lors d'une recherche sur le Marché et mise en valeur institutionnelle du Groupe Mmedia Universe.
+- **What It Does**: Récompense la fidélité quotidienne des utilisateurs de **Boo** par des Jetons et Pass gratuits, tout en aérant la navigation de l'onglet Profil avec un espace noble et indépendant pour les applications du **Groupe Mmedia Universe**.
+- **Target Audience / Persona**: Utilisateurs réguliers au Gabon qui consultent le Marché chaque jour et souhaitent débloquer des transactions gratuites grâce à leur assiduité.
+- **Key Value**: Rétention quotidienne accrue (effet d'habitude sur 7 jours) et lisibilité optimale du Profil.
 
 ---
 
 ## 2. User Experience & Visual Design
 
-### A. Moteur de Filtre Ultra-Intelligent (Familles de Mots + Fautes + Synonymes)
-1. **Pipeline de Compréhension Linguistique en 4 Couches** :
-   - **Couche 1 — Normalisation & Désaccentuation** : Conversion minuscule, retrait des accents (`é/è/ê → e`, `à → a`, `ô → o`), nettoyage de la ponctuation et réduction des lettres doublées accidentelles (`telle → tele`, `ecraaan → ecran`).
-   - **Couche 2 — Racinisation Singulier / Pluriel** : Neutralisation automatique des terminaisons plurielles (`s`, `x`, `aux`) pour que `écrans`, `ecrans`, `moniteurs`, `pouces` convergent vers la même racine.
-   - **Couche 3 — Graphe de Familles de Mots & Synonymes** : Chaque terme saisi active automatiquement toute sa famille sémantique :
-     - *Famille Écrans & TV* : `ecran`, `ecrans`, `moniteur`, `moniteurs`, `pouce`, `pouces`, `tv`, `television`, `tele`, `full hd`, `hdmi`, `4k`, `display`, `dalle`.
-     - *Famille Téléphones & Tablettes* : `telephone`, `tel`, `portable`, `smartphone`, `iphone`, `samsung`, `galaxy`, `tecno`, `infinix`, `tablette`, `ipad`, `wacom`.
-     - *Famille Son & Audio* : `enceinte`, `baffle`, `son`, `audio`, `jbl`, `speaker`, `bluetooth`, `casque`, `ecouteur`, `airpods`, `micro`, `cravate`, `sans fil`.
-     - *Famille Gaming & Consoles* : `ps4`, `ps5`, `playstation`, `console`, `manette`, `dualsense`, `jeu`, `jeux`, `xbox`, `nintendo`, `gamer`.
-     - *Famille Électroménager & Maison* : `four`, `micro-onde`, `microonde`, `blender`, `mixeur`, `cafe`, `expresso`, `cafetiere`, `frigo`, `congelateur`, `clim`, `ventilateur`, `cuisine`.
-     - *Famille Mode, Chaussures & Montres* : `chaussure`, `basket`, `sneakers`, `nike`, `air max`, `pointure`, `sac`, `sac a dos`, `montre`, `smartwatch`, `connectee`, `bijou`, `mode`.
-     - *Famille Photo, Éclairage & Studio* : `ring light`, `trepied`, `lumiere`, `led`, `camera`, `photo`, `video`, `canon`, `objectif`.
-     - *Famille Informatique* : `clavier`, `mecanique`, `rgb`, `ordinateur`, `pc`, `laptop`, `macbook`, `souris`.
-   - **Couche 4 — Tolérance aux Fautes de Frappe (Distance de Levenshtein $\le 2$)** : Même si l'utilisateur écrit `moniter`, `télévison`, `ekran`, `ifone` ou `bluetoth`, le moteur corrige vers la famille de mots correspondante.
-2. **Retour Visuel Intelligent dans le Tiroir `Filtre`** :
-   - Lorsqu'une famille de mots est reconnue (ex. l'utilisateur tape `télé` ou `pouce`), un badge discret indique les termes associés compris par le filtre (*ex. « Famille reconnue : Écran · Moniteur · TV · Pouces »*).
+### A. Parcours de Récompense Quotidienne (7 Jours)
+1. **Déclenchement & Accès Rapide** :
+   - **À l'ouverture de l'application** : Si la connexion du jour n'a pas encore été validée, le parcours s'affiche pour permettre à l'utilisateur de valider son jour en 1 clic.
+   - **Bouton permanent de Série (`🔥 J1..J7`)** : Accessible à tout moment depuis l'en-tête et depuis un encart dédié dans la **Boutique de Jetons** et le **Profil**.
+2. **Design de la Piste des 7 Jours** :
+   - Grille visuelle des **7 étapes** (J1 à J7) distinguant clairement :
+     - Les jours déjà validés (`✓` Émeraude),
+     - Le jour actuel à valider (`Aujourd'hui` Orange Boo `#FF6B00`),
+     - Les 3 paliers cadeaux mis en relief en **Violet Royal (`#A855F7`)** : **J3 (+1 Jeton)**, **J5 (+1 Pass Boost)**, **J7 (Coffre +2 Jetons)**.
+   - Barre de progression fluide et bouton principal **`VALIDER MA CONNEXION DU JOUR`** (ou **`RÉCUPÉRER MON CADEAU 🎁`** aux jours 3, 5 et 7).
+   - Traçabilité complète : chaque cadeau récupéré ajoute une ligne officielle dans l'**Historique** du Profil.
 
-### B. Espace Exclusif Dédié aux Applications du Groupe Mmedia Universe
-1. **Accès Fluide & Multi-Points** :
-   - **Dans `Profil`** : Nouvel onglet dédié **`Apps`** dans la barre de sous-navigation (`Historique | Objets | Apps | FAQ | Légal`).
-   - **Sur le `Marché`** : Une carte d'entrée soignée permettant d'ouvrir la **Vitrine Plein Écran Mmedia Universe** ou de lancer directement **VYBZ**.
-2. **Architecture de l'Espace Mmedia Universe** :
-   - **En-tête Institutionnel** : Badge *« Écosystème Officiel · Groupe Mmedia Universe »* présentant la vision digitale du groupe au Gabon.
-   - **Application en Vedette — VYBZ** :
-     - Carte grand format avec le logo officiel **VYBZ**, statut *« Disponible · En ligne »*, présentation claire de l'univers VYBZ et bouton court **`Découvrez VYBZ ↗`** (sans aucune URL visible).
-   - **Applications en Cours de Développement (Pipeline Mmedia Universe)** :
-     - Grille dédiée aux prochaines applications du groupe en cours de développement (*ex. Mmedia Studio, Mmedia Events, Mmedia Pay...*) avec badges *« En développement · Bientôt »*, conçue pour s'enrichir au fil des lancements.
-
-### C. Signature Officielle de Bas de Page avec Mini Logo Vectoriel Boo
-- En bas de chaque écran de l'application :
-  > **© 2026 [Mini Logo Boo] · Une initiative du Groupe Mmedia Universe. Tous droits réservés.**
-- Le mot *« Technologies »* est supprimé et le mini logo vectoriel **Boo** est intégré directement au cœur de la ligne.
+### B. Espace Exclusif Mmedia Universe sous la Carte d'Identité du Profil
+1. **Barre des sous-onglets revenue à 4 colonnes** :
+   - `Historique` | `Objets` | `FAQ` | `Légal` — aucun texte serré ni saturé.
+2. **Carte Dédiée « Écosystème Mmedia Universe » (Juste sous la carte d'identité)** :
+   - Affiche le logo officiel **VYBZ**, le compteur des applications du groupe (*2 disponibles · 4 en développement*), le bouton direct **`Découvrez VYBZ ↗`** et le bouton **`Ouvrir l'Espace Apps`** qui déploie la vitrine plein écran du Groupe Mmedia Universe.
 
 ---
 
 ## 3. Key Product Decisions & Trade-Offs
 
-- **Decision 1 : Moteur sémantique local déterministe plutôt que recherche exacte `includes()`**
-  - *Chosen Approach* : Indexation par graphe de synonymes + racinisation + distance de Levenshtein exécutée en moins de 1 milliseconde sur le téléphone.
-  - *Why* : Garantit une vitesse instantanée à 120fps, fonctionne hors-ligne sans IA, et pardonne toutes les fautes de frappe ou variations de vocabulaire (`tv` trouve `Écran Moniteur 27" Full HD`).
-- **Decision 2 : Hub dédié Mmedia Universe évolutif**
-  - *Chosen Approach* : Créer un composant modulaire `MmediaUniverseHub` utilisable à la fois comme onglet dédié dans `Profil` et comme vitrine plein écran.
-  - *Why* : Offre un véritable écrin institutionnel aux créations du Groupe Mmedia Universe, prêt à accueillir les futures applications en développement.
+- **Decision 1 : Piste de 7 jours avec 3 paliers cadeaux (J3, J5, J7) + bouton de test rapide**
+  - *Chosen Approach* : Persistance de la date du dernier check-in dans `localStorage` + bouton *« Simuler Jour Suivant (+24h) »* pour tester tout le cycle instantanément.
+  - *Why* : Offre à la fois une vraie mécanique quotidienne en production et la possibilité de vérifier immédiatement l'attribution des Jetons et Pass gratuits.
+- **Decision 2 : Séparation entre les sous-onglets fonctionnels de Boo et l'Espace Mmedia Universe**
+  - *Chosen Approach* : Garder les 4 sous-onglets centrés sur Boo (*Historique, Objets, FAQ, Légal*) et donner à Mmedia Universe son propre écrin visuel juste sous l'identité du profil.
+  - *Why* : Évite toute saturation de la barre d'onglets tout en rendant l'écosystème Mmedia Universe immédiatement visible dès l'ouverture de l'onglet Profil.
 
 ---
 
@@ -81,21 +66,18 @@ Cette mise à jour dote **Boo** d'un **moteur de recherche et de filtrage lingui
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                     BOO · GROUPE MMEDIA UNIVERSE                         │
+│                     BOO · SYSTÈME D'ASSIDUITÉ & PROFIL                   │
 ├──────────────────────────────────────────────────────────────────────────┤
-│  Moteur de Filtre Linguistique (smartSearch.ts)                          │
-│  ├── 1. Normalisation (sans accents, minuscules, dédoublonnage)          │
-│  ├── 2. Racinisation (singulier/pluriel : écrans -> ecran)               │
-│  ├── 3. Graphe de 8 Familles de Synonymes (écran=moniteur=pouce=tv=télé) │
-│  └── 4. Tolérance Fautes de Frappe (Distance de Levenshtein <= 2)        │
+│  Parcours Récompense 7 Jours (DailyStreakModal.tsx)                      │
+│  ├── J1, J2, J4, J6 : Validation de connexion quotidienne                │
+│  ├── J3 : Cadeau +1 Jeton Gratuit ──► Crédite Wallet + Historique        │
+│  ├── J5 : Cadeau +1 Pass Coupe-File ──► Crédite Wallet + Historique      │
+│  └── J7 : Super Coffre +2 Jetons ──► Crédite Wallet + Nouveau Cycle      │
 ├──────────────────────────────────────────────────────────────────────────┤
-│  Espace Exclusif Mmedia Universe (MmediaUniverseHub.tsx)                 │
-│  ├── Accessible via Profil > Onglet "Apps" & Modale Vitrine Plein Écran  │
-│  ├── En Vedette : VYBZ + Logo Officiel + Bouton "Découvrez VYBZ"         │
-│  └── Pipeline : Cartes "En développement" pour les futures apps du groupe│
-├──────────────────────────────────────────────────────────────────────────┤
-│  Signature Officielle (BooFooterSignature.tsx)                           │
-│  └── "© 2026 [Mini Logo Boo] · Une initiative du Groupe Mmedia Universe. │
-│       Tous droits réservés."                                             │
+│  Onglet Profil Réorganisé (ProfileTab.tsx)                               │
+│  ├── 1. Carte d'Identité Utilisateur + Compteurs                         │
+│  ├── 2. Espace Dédié Mmedia Universe (Découvrez VYBZ + Vitrine Apps)     │
+│  ├── 3. Barre 4 Sous-Onglets : [Historique] [Objets] [FAQ] [Légal]       │
+│  └── 4. Signature Officielle 3 Lignes avec Mini Logo Boo                 │
 └──────────────────────────────────────────────────────────────────────────┘
 ```

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Camera, Edit3, HelpCircle, History, Layers, Scale, Trash2 } from 'lucide-react';
+import { Camera, Edit3, HelpCircle, History, Scale, Trash2 } from 'lucide-react';
 import { GABON_CITIES, getConditionSpec } from '../data/initialData';
 import {
   ActivityHistoryItem,
+  DailyStreakState,
   formatCompactFcfa,
   GabonCity,
   LegalSectionId,
@@ -13,14 +14,15 @@ import {
 } from '../types/troc';
 import { BooFaqAccordion } from './BooFaqAccordion';
 import { BooLegalCenter } from './BooLegalCenter';
-import { MmediaUniverseHub } from './MmediaUniverseHub';
 import { VybzPromoCard } from './VybzPromoCard';
 import { BooFooterSignature } from './BooFooterSignature';
+import { DailyStreakBanner } from './DailyStreakModal';
 
 interface ProfileTabProps {
   userProfile: UserProfile;
   isEditingProfile: boolean;
   wallet: WalletMetrics;
+  dailyStreak: DailyStreakState;
   profileSubTab: ProfileSubTab;
   legalInitialSection: LegalSectionId;
   activityHistory: ActivityHistoryItem[];
@@ -32,12 +34,15 @@ interface ProfileTabProps {
   onSelectDefaultWeapon: (idx: number) => void;
   onDeleteWeapon: (id: string) => void;
   onOpenPublish: () => void;
+  onOpenMmediaHub: () => void;
+  onOpenDailyStreak: () => void;
 }
 
 export const ProfileTab: React.FC<ProfileTabProps> = ({
   userProfile,
   isEditingProfile,
   wallet,
+  dailyStreak,
   profileSubTab,
   legalInitialSection,
   activityHistory,
@@ -48,7 +53,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   onSelectSubTab,
   onSelectDefaultWeapon,
   onDeleteWeapon,
-  onOpenPublish
+  onOpenPublish,
+  onOpenMmediaHub,
+  onOpenDailyStreak
 }) => {
   return (
     <div className="flex-1 overflow-y-auto px-3.5 pt-3 pb-8 space-y-3.5 gpu-120fps">
@@ -158,25 +165,31 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       </div>
 
-      {/* Sous-navigation Profil : 5 Onglets courts (Historique | Objets | Apps | FAQ | Légal) */}
-      <div className="grid grid-cols-5 gap-1 bg-[#11141c] p-1 rounded-xl border border-white/[0.08]">
+      {/* ESPACE DÉDIÉ À LUI SEUL : Groupe Mmedia Universe & VYBZ (juste sous la carte d'identité) */}
+      <VybzPromoCard variant="banner" onOpenMmediaHub={onOpenMmediaHub} />
+
+      {/* PARCOURS D'ASSIDUITÉ 7 JOURS (Récompenses de connexion quotidienne) */}
+      <DailyStreakBanner streak={dailyStreak} onOpenModal={onOpenDailyStreak} />
+
+      {/* Sous-navigation Profil désengorgée : 4 Onglets clairs (Historique | Objets | FAQ | Légal) */}
+      <div className="grid grid-cols-4 gap-1 bg-[#11141c] p-1 rounded-xl border border-white/[0.08]">
         <button
           type="button"
           onClick={() => onSelectSubTab('history')}
-          className={`py-2 px-1 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all ${
+          className={`py-2 px-1.5 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 transition-all ${
             profileSubTab === 'history'
               ? 'bg-[#222632] text-white shadow'
               : 'text-gray-400 hover:text-white'
           }`}
         >
-          <History className="w-3 h-3 text-[#ff6b00] shrink-0" />
+          <History className="w-3.5 h-3.5 text-[#ff6b00] shrink-0" />
           <span className="truncate">Historique</span>
         </button>
 
         <button
           type="button"
           onClick={() => onSelectSubTab('weapons')}
-          className={`py-2 px-1 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all ${
+          className={`py-2 px-1.5 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 transition-all ${
             profileSubTab === 'weapons'
               ? 'bg-[#222632] text-white shadow'
               : 'text-gray-400 hover:text-white'
@@ -187,40 +200,27 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
         <button
           type="button"
-          onClick={() => onSelectSubTab('apps')}
-          className={`py-2 px-1 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all ${
-            profileSubTab === 'apps'
-              ? 'bg-[#e11d48] text-white shadow'
-              : 'text-[#fb7185] hover:text-white'
-          }`}
-        >
-          <Layers className="w-3 h-3 shrink-0" />
-          <span className="truncate">Apps</span>
-        </button>
-
-        <button
-          type="button"
           onClick={() => onSelectSubTab('help')}
-          className={`py-2 px-1 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all ${
+          className={`py-2 px-1.5 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 transition-all ${
             profileSubTab === 'help'
               ? 'bg-[#222632] text-white shadow'
               : 'text-gray-400 hover:text-white'
           }`}
         >
-          <HelpCircle className="w-3 h-3 text-[#ff6b00] shrink-0" />
+          <HelpCircle className="w-3.5 h-3.5 text-[#ff6b00] shrink-0" />
           <span className="truncate">FAQ</span>
         </button>
 
         <button
           type="button"
           onClick={() => onSelectSubTab('legal')}
-          className={`py-2 px-1 rounded-lg text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all ${
+          className={`py-2 px-1.5 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1 transition-all ${
             profileSubTab === 'legal'
               ? 'bg-[#222632] text-white shadow'
               : 'text-gray-400 hover:text-white'
           }`}
         >
-          <Scale className="w-3 h-3 text-[#ff6b00] shrink-0" />
+          <Scale className="w-3.5 h-3.5 text-[#ff6b00] shrink-0" />
           <span className="truncate">Légal</span>
         </button>
       </div>
@@ -340,22 +340,11 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       )}
 
-      {/* SOUS-ONGLET 3 : ESPACE EXCLUSIF APPLICATIONS MMEDIA UNIVERSE */}
-      {profileSubTab === 'apps' && <MmediaUniverseHub />}
-
-      {/* SOUS-ONGLET 4 : FOIRE AUX QUESTIONS & GUIDE INTERACTIF BOO */}
+      {/* SOUS-ONGLET 3 : FOIRE AUX QUESTIONS & GUIDE INTERACTIF BOO */}
       {profileSubTab === 'help' && <BooFaqAccordion />}
 
-      {/* SOUS-ONGLET 5 : LÉGAL (CGU • CONFIDENTIALITÉ • À PROPOS — LOI GABONAISE) */}
+      {/* SOUS-ONGLET 4 : LÉGAL (CGU • CONFIDENTIALITÉ • À PROPOS — LOI GABONAISE) */}
       {profileSubTab === 'legal' && <BooLegalCenter initialSection={legalInitialSection} />}
-
-      {/* Invitation intelligente vers VYBZ & l'espace Mmedia Universe */}
-      {profileSubTab !== 'apps' && (
-        <VybzPromoCard
-          variant="banner"
-          onOpenMmediaHub={() => onSelectSubTab('apps')}
-        />
-      )}
 
       {/* Signature officielle Boo */}
       <BooFooterSignature />

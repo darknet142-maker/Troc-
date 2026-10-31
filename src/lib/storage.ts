@@ -9,6 +9,7 @@ import {
 } from '../data/initialData';
 import {
   ActivityHistoryItem,
+  DailyStreakState,
   GabonCity,
   MarketItem,
   MatchRecord,
@@ -25,7 +26,16 @@ const STORAGE_KEYS = {
   WALLET: 'fast_troc_wallet_v4',
   SENT_OFFERS: 'fast_troc_sent_offers_v4',
   PROFILE: 'fast_troc_profile_v4',
-  HISTORY: 'fast_troc_history_v4'
+  HISTORY: 'fast_troc_history_v4',
+  DAILY_STREAK: 'fast_troc_daily_streak_v4'
+};
+
+export const INITIAL_DAILY_STREAK: DailyStreakState = {
+  currentDay: 1,
+  totalCheckIns: 0,
+  lastClaimDate: null,
+  claimedToday: false,
+  cyclesCompleted: 0
 };
 
 // Lecture des clés Supabase depuis les Secrets AI Studio (SUPABASE_URL / SUPABASE_ANON_KEY ou VITE_*)
@@ -427,6 +437,43 @@ export function loadActivityHistory(): ActivityHistoryItem[] {
 export function saveActivityHistory(history: ActivityHistoryItem[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
+  } catch {
+    // ignore
+  }
+}
+
+export function getTodayDateKey(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+export function loadDailyStreak(): DailyStreakState {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.DAILY_STREAK);
+    if (!raw) return INITIAL_DAILY_STREAK;
+    const parsed: DailyStreakState = { ...INITIAL_DAILY_STREAK, ...JSON.parse(raw) };
+    const todayKey = getTodayDateKey();
+    if (parsed.lastClaimDate && parsed.lastClaimDate !== todayKey) {
+      // Nouveau jour calendaire : débloque l'étape suivante du parcours 7 jours
+      const nextDay = parsed.currentDay >= 7 ? 1 : parsed.currentDay + 1;
+      return {
+        ...parsed,
+        currentDay: nextDay,
+        claimedToday: false
+      };
+    }
+    return parsed;
+  } catch {
+    return INITIAL_DAILY_STREAK;
+  }
+}
+
+export function saveDailyStreak(streak: DailyStreakState): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.DAILY_STREAK, JSON.stringify(streak));
   } catch {
     // ignore
   }

@@ -1,22 +1,27 @@
 import React from 'react';
 import { TOKEN_PACKS } from '../data/initialData';
-import { TokenPackOffer, WalletMetrics } from '../types/troc';
+import { DailyStreakState, TokenPackOffer, WalletMetrics } from '../types/troc';
 import { BooFooterSignature } from './BooFooterSignature';
+import { DailyStreakBanner } from './DailyStreakModal';
 
 interface ShopTabProps {
   wallet: WalletMetrics;
+  dailyStreak: DailyStreakState;
   selectedOperator: 'Airtel Money' | 'Moov Money';
   onSelectOperator: (op: 'Airtel Money' | 'Moov Money') => void;
   onBuyTokenPack: (pack: TokenPackOffer) => void;
   onBuyBoostPack: (boostCount: number, priceFcfa: number) => void;
+  onOpenDailyStreak: () => void;
 }
 
 export const ShopTab: React.FC<ShopTabProps> = ({
   wallet,
+  dailyStreak,
   selectedOperator,
   onSelectOperator,
   onBuyTokenPack,
-  onBuyBoostPack
+  onBuyBoostPack,
+  onOpenDailyStreak
 }) => {
   return (
     <div className="flex-1 overflow-y-auto px-3.5 pt-3 pb-8 space-y-3.5 gpu-120fps">
@@ -42,6 +47,9 @@ export const ShopTab: React.FC<ShopTabProps> = ({
           un accord et débloquer le WhatsApp + Ticket PIN.
         </p>
       </div>
+
+      {/* Parcours d'Assiduité 7 Jours : Gagnez des Jetons & Boosts Gratuits */}
+      <DailyStreakBanner streak={dailyStreak} onOpenModal={onOpenDailyStreak} />
 
       {/* Sélecteur d'Opérateur Mobile Money */}
       <div className="bg-[#11141c] p-2 rounded-2xl border border-white/[0.08] flex items-center justify-between gap-2">

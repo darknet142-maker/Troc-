@@ -1,21 +1,27 @@
 import React from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Flame } from 'lucide-react';
 import { BooLogo } from './BooLogo';
 import { MainTab } from '../types/troc';
 
 interface BooHeaderProps {
   tokens: number;
+  streakDay: number;
+  streakClaimedToday: boolean;
   incomingPendingCount: number;
   activeMatchesCount: number;
   onSelectTab: (tab: MainTab) => void;
+  onOpenDailyStreak: () => void;
   onTriggerIncomingAlert: () => void;
 }
 
 export const BooHeader: React.FC<BooHeaderProps> = ({
   tokens,
+  streakDay,
+  streakClaimedToday,
   incomingPendingCount,
   activeMatchesCount,
   onSelectTab,
+  onOpenDailyStreak,
   onTriggerIncomingAlert
 }) => {
   return (
@@ -30,12 +36,38 @@ export const BooHeader: React.FC<BooHeaderProps> = ({
         <BooLogo className="h-8 w-auto drop-shadow-[0_2px_10px_rgba(255,140,0,0.28)]" />
       </button>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 shrink-0">
+        {/* Badge Parcours Assiduité 7 Jours (Jetons Gratuits) */}
+        <button
+          type="button"
+          onClick={onOpenDailyStreak}
+          title="Parcours Récompense Quotidienne (Jetons gratuits)"
+          className={`uhd-surface hover:brightness-110 active:scale-95 transition-all duration-100 px-2.5 py-1.5 rounded-full border flex items-center gap-1 min-h-[36px] relative ${
+            !streakClaimedToday
+              ? 'border-[#ff6b00]/80 bg-[#ff6b00]/15 shadow-[0_0_12px_rgba(255,107,0,0.28)]'
+              : 'border-emerald-500/35 bg-emerald-500/10'
+          }`}
+        >
+          <Flame
+            className={`w-3.5 h-3.5 shrink-0 ${
+              !streakClaimedToday
+                ? 'text-[#ff6b00] fill-[#ff6b00]'
+                : 'text-emerald-400 fill-emerald-400'
+            }`}
+          />
+          <span className="text-[11px] font-black text-white font-mono-tabular">
+            J{streakDay}/7
+          </span>
+          {!streakClaimedToday && (
+            <span className="w-2 h-2 rounded-full bg-[#ff6b00] animate-ping absolute -top-0.5 -right-0.5" />
+          )}
+        </button>
+
         {/* Compteur de Jetons UHD -> Ouvre la Boutique */}
         <button
           type="button"
           onClick={() => onSelectTab('shop')}
-          className="uhd-surface hover:brightness-110 active:scale-95 transition-all duration-100 px-3 py-1.5 rounded-full border border-purple-500/35 flex items-center gap-1.5 min-h-[36px]"
+          className="uhd-surface hover:brightness-110 active:scale-95 transition-all duration-100 px-2.5 py-1.5 rounded-full border border-purple-500/35 flex items-center gap-1.5 min-h-[36px]"
         >
           <span className="w-4 h-4 rounded-full bg-gradient-to-b from-purple-400 via-purple-500 to-purple-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm">
             {tokens}

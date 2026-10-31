@@ -14,8 +14,11 @@ import {
 } from './data/initialData';
 import {
   fetchInitialFromSupabase,
+  getTodayDateKey,
+  INITIAL_DAILY_STREAK,
   isSupabaseConfigured,
   loadActivityHistory,
+  loadDailyStreak,
   loadMarketItems,
   loadMatches,
   loadSentOffers,
@@ -25,6 +28,7 @@ import {
   renderSquare1to1Image,
   resetAllDemoData,
   saveActivityHistory,
+  saveDailyStreak,
   saveMarketItems,
   saveMatches,
   saveSentOffers,
@@ -42,6 +46,7 @@ import {
   CashTopUpAmount,
   CityFilter,
   ConditionGradeId,
+  DailyStreakState,
   formatCompactFcfa,
   GabonCity,
   inferItemCategory,
@@ -65,6 +70,7 @@ import { MarketFilterDrawer } from './components/MarketFilterDrawer';
 import { MarketCard } from './components/MarketCard';
 import { VybzPromoCard } from './components/VybzPromoCard';
 import { MmediaUniverseModal } from './components/MmediaUniverseHub';
+import { DAILY_REWARD_STEPS, DailyStreakModal } from './components/DailyStreakModal';
 import { BooFooterSignature } from './components/BooFooterSignature';
 import { BottomNavBar } from './components/BottomNavBar';
 import { ShopTab } from './components/ShopTab';
@@ -111,8 +117,9 @@ export default function App() {
   const [selectedCondition, setSelectedCondition] = useState<ConditionGradeId | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Portefeuille, Profil, Historique, Objets, Marché & Matchs
+  // Portefeuille, Assiduité, Profil, Historique, Objets, Marché & Matchs
   const [wallet, setWallet] = useState<WalletMetrics>(() => loadWallet());
+  const [dailyStreak, setDailyStreak] = useState<DailyStreakState>(() => loadDailyStreak());
   const [userProfile, setUserProfile] = useState<UserProfile>(() => loadUserProfile());
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
   const [activityHistory, setActivityHistory] = useState<ActivityHistoryItem[]>(() =>
@@ -129,7 +136,10 @@ export default function App() {
   const [matches, setMatches] = useState<MatchRecord[]>(() => loadMatches());
 
   // Modales actives & navigation retour entre modales
-  const [activeModal, setActiveModal] = useState<ActiveModal>('none');
+  const [activeModal, setActiveModal] = useState<ActiveModal>(() => {
+    const initialStreak = loadDailyStreak();
+    return initialStreak.claimedToday ? 'none' : 'daily_streak';
+  });
   const [returnModalAfterInspect, setReturnModalAfterInspect] = useState<ActiveModal>('none');
   const [returnModalAfterLegal, setReturnModalAfterLegal] = useState<ActiveModal>('none');
   const [selectedMarketItem, setSelectedMarketItem] = useState<MarketItem | null>(null);
@@ -178,6 +188,7 @@ export default function App() {
 
   // Persistance localStorage
   useEffect(() => saveWallet(wallet), [wallet]);
+  useEffect(() => saveDailyStreak(dailyStreak), [dailyStreak]);
   useEffect(() => saveWeapons(weapons), [weapons]);
   useEffect(() => saveMarketItems(marketItems), [marketItems]);
   useEffect(() => saveMatches(matches), [matches]);
@@ -867,6 +878,75 @@ export default function App() {
     return `https://wa.me/${match.partnerPhone}?text=${text}`;
   };
 
+  // Validation de la connexion quotidienne & obtention des cadeaux d'assiduité (J3, J5, J7)
+  const handleClaimDailyStreak = () => {
+    if (dailyStreak.claimedToday) return;
+    triggerHaptic([40, 60, 40]);
+
+    const step =
+      DAILY_REWARD_STEPS.find((s) => s.day === dailyStreak.currentDay) || DAILY_REWARD_STEPS[0];
+
+    if (step.tokensGranted > 0 || step.boostsGranted > 0) {
+      setWallet((prev) => ({
+        ...prev,
+        tokens: prev.tokens + step.tokensGranted,
+        boostCredits: prev.boostCredits + step.boostsGranted
+      }));
+    }
+
+    const updatedStreak: DailyStreakState = {
+      ...dailyStreak,
+      claimedToday: true,
+      lastClaimDate: getTodayDateKey(),
+      totalCheckIns: dailyStreak.totalCheckIns + 1,
+      cyclesCompleted:
+        dailyStreak.currentDay === 7
+          ? dailyStreak.cyclesCompleted + 1
+          : dailyStreak.cyclesCompleted
+    };
+    setDailyStreak(updatedStreak);
+
+    appendHistory({
+      type: 'DAILY_REWARD_CLAIMED',
+      title: step.isMilestone
+        ? `Cadeau Assiduité Jour ${step.day} débloqué`
+        : `Connexion quotidienne validée (Jour ${step.day}/7)`,
+      subtitle: step.isMilestone
+        ? `Récompense fidélité : ${step.rewardBadge} offert gratuitement`
+        : `Parcours d'assiduité Boo • ${updatedStreak.totalCheckIns} connexion(s) cumulée(s)`,
+      amountLabel: step.rewardBadge,
+      badgeColor: step.isMilestone ? 'purple' : 'emerald'
+    });
+
+    if (step.tokensGranted > 0) {
+      triggerToast(
+        `🎁 Jour ${step.day} validé : +${step.tokensGranted} Jeton${step.tokensGranted > 1 ? 's' : ''} Gratuit${step.tokensGranted > 1 ? 's' : ''} crédité${step.tokensGranted > 1 ? 's' : ''} !`,
+        'green'
+      );
+    } else if (step.boostsGranted > 0) {
+      triggerToast(
+        `🚀 Jour ${step.day} validé : +${step.boostsGranted} Pass Coupe-File Gratuit crédité !`,
+        'orange'
+      );
+    } else {
+      triggerToast(`🔥 Connexion du Jour ${step.day}/7 validée !`, 'green');
+    }
+  };
+
+  // Simulation du jour suivant (+24h) pour tester immédiatement les 7 jours et les cadeaux
+  const handleSimulateNextDayStreak = () => {
+    triggerHaptic(25);
+    setDailyStreak((prev) => {
+      const nextDay = prev.currentDay >= 7 ? 1 : prev.currentDay + 1;
+      return {
+        ...prev,
+        currentDay: nextDay,
+        claimedToday: false
+      };
+    });
+    triggerToast('⏩ Jour suivant simulé : vous pouvez valider la nouvelle connexion !', 'orange');
+  };
+
   const handleResetDemo = () => {
     resetAllDemoData();
     setWeapons(INITIAL_WEAPONS);
@@ -874,6 +954,7 @@ export default function App() {
     setMarketItems(INITIAL_MARKET);
     setMatches(INITIAL_MATCHES);
     setWallet(INITIAL_WALLET);
+    setDailyStreak(INITIAL_DAILY_STREAK);
     setUserProfile(INITIAL_PROFILE);
     setActivityHistory(INITIAL_HISTORY);
     setSentOffers({});
@@ -884,7 +965,7 @@ export default function App() {
     setSearchQuery('');
     setProposalCashTopUp(0);
     setAcceptedTerms(false);
-    setActiveModal('none');
+    setActiveModal('daily_streak');
     triggerToast('🔄 Démonstration réinitialisée', 'dark');
   };
 
@@ -931,11 +1012,17 @@ export default function App() {
         {/* EN-TÊTE BOO VECTORIEL UHD */}
         <BooHeader
           tokens={wallet.tokens}
+          streakDay={dailyStreak.currentDay}
+          streakClaimedToday={dailyStreak.claimedToday}
           incomingPendingCount={incomingPendingCount}
           activeMatchesCount={activeMatchesCount}
           onSelectTab={(tab) => {
             triggerHaptic(15);
             setActiveTab(tab);
+          }}
+          onOpenDailyStreak={() => {
+            triggerHaptic(20);
+            setActiveModal('daily_streak');
           }}
           onTriggerIncomingAlert={triggerIncomingAttackAlert}
         />
@@ -1044,6 +1131,7 @@ export default function App() {
         {activeTab === 'shop' && (
           <ShopTab
             wallet={wallet}
+            dailyStreak={dailyStreak}
             selectedOperator={selectedOperator}
             onSelectOperator={(op) => {
               triggerHaptic(15);
@@ -1051,6 +1139,10 @@ export default function App() {
             }}
             onBuyTokenPack={handleBuyTokenPack}
             onBuyBoostPack={handleBuyBoostPack}
+            onOpenDailyStreak={() => {
+              triggerHaptic(20);
+              setActiveModal('daily_streak');
+            }}
           />
         )}
 
@@ -1078,12 +1170,13 @@ export default function App() {
           />
         )}
 
-        {/* ONGLET 4 : PROFIL UTILISATEUR (HISTORIQUE | OBJETS | FAQ | CGU & INFOS) */}
+        {/* ONGLET 4 : PROFIL UTILISATEUR (HISTORIQUE | OBJETS | FAQ | LÉGAL + ESPACE DÉDIÉ MMEDIA UNIVERSE) */}
         {activeTab === 'profile' && (
           <ProfileTab
             userProfile={userProfile}
             isEditingProfile={isEditingProfile}
             wallet={wallet}
+            dailyStreak={dailyStreak}
             profileSubTab={profileSubTab}
             legalInitialSection={legalSection}
             activityHistory={activityHistory}
@@ -1104,6 +1197,14 @@ export default function App() {
             onOpenPublish={() => {
               triggerHaptic(25);
               setActiveModal('add_photo');
+            }}
+            onOpenMmediaHub={() => {
+              triggerHaptic(20);
+              setActiveModal('mmedia_hub');
+            }}
+            onOpenDailyStreak={() => {
+              triggerHaptic(20);
+              setActiveModal('daily_streak');
             }}
           />
         )}
@@ -1315,6 +1416,15 @@ export default function App() {
             <MmediaUniverseModal onClose={() => setActiveModal('none')} />
           )}
 
+          {activeModal === 'daily_streak' && (
+            <DailyStreakModal
+              streak={dailyStreak}
+              onClaimToday={handleClaimDailyStreak}
+              onSimulateNextDay={handleSimulateNextDayStreak}
+              onClose={() => setActiveModal('none')}
+            />
+          )}
+
           {activeModal === 'legal_viewer' && (
             <LegalModal
               initialSection={legalSection}
@@ -1357,10 +1467,16 @@ export default function App() {
 
             <button
               type="button"
-              onClick={() => {
-                setActiveTab('profile');
-                setProfileSubTab('apps');
-              }}
+              onClick={() => setActiveModal('daily_streak')}
+              className="w-full uhd-surface text-gray-100 font-bold text-xs py-2.5 px-3 rounded-xl border border-purple-500/40 flex items-center justify-between transition-colors"
+            >
+              <span>🔥 Parcours Assiduité (J{dailyStreak.currentDay}/7)</span>
+              <span className="text-[10px] font-black text-purple-300">Jetons Gratuits</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveModal('mmedia_hub')}
               className="w-full uhd-surface text-gray-100 font-bold text-xs py-2.5 px-3 rounded-xl border border-[#e11d48]/40 flex items-center justify-between transition-colors"
             >
               <span>🚀 Espace Apps Mmedia Universe</span>

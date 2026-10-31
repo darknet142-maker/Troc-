@@ -4,7 +4,7 @@ export type CashTopUpAmount = 0 | 2000 | 5000 | 10000;
 export type SoulteAmount = CashTopUpAmount;
 
 export type MainTab = 'market' | 'shop' | 'matches' | 'profile';
-export type ProfileSubTab = 'history' | 'weapons' | 'apps' | 'help' | 'legal';
+export type ProfileSubTab = 'history' | 'weapons' | 'help' | 'legal';
 export type LegalSectionId = 'cgu' | 'privacy' | 'about';
 
 export type ItemCategory =
@@ -29,6 +29,7 @@ export type ActiveModal =
   | 'city_selector'
   | 'market_filter'
   | 'mmedia_hub'
+  | 'daily_streak'
   | 'legal_viewer';
 
 export type GabonCity =
@@ -151,6 +152,7 @@ export type HistoryEventType =
   | 'CASH_PURCHASE'
   | 'BOOST_COUPE_FILE'
   | 'ITEM_PUBLISHED'
+  | 'DAILY_REWARD_CLAIMED'
   | 'GHOST_BLOCKED';
 
 export interface ActivityHistoryItem {
@@ -184,6 +186,14 @@ export interface WalletMetrics {
   coupeFileCount: number;
   cashCommissionFcfa: number;
   blockedGhosts: string[];
+}
+
+export interface DailyStreakState {
+  currentDay: number; // 1 to 7
+  totalCheckIns: number;
+  lastClaimDate: string | null; // YYYY-MM-DD
+  claimedToday: boolean;
+  cyclesCompleted: number;
 }
 
 export interface TokenPackOffer {
