@@ -9,6 +9,7 @@ import {
 } from '../data/initialData';
 import {
   ActivityHistoryItem,
+  GabonCity,
   MarketItem,
   MatchRecord,
   SentOfferInfo,
@@ -18,13 +19,13 @@ import {
 } from '../types/troc';
 
 const STORAGE_KEYS = {
-  WEAPONS: 'fast_troc_weapons_v3',
-  MARKET: 'fast_troc_market_v3',
-  MATCHES: 'fast_troc_matches_v3',
-  WALLET: 'fast_troc_wallet_v3',
-  SENT_OFFERS: 'fast_troc_sent_offers_v3',
-  PROFILE: 'fast_troc_profile_v3',
-  HISTORY: 'fast_troc_history_v3'
+  WEAPONS: 'fast_troc_weapons_v4',
+  MARKET: 'fast_troc_market_v4',
+  MATCHES: 'fast_troc_matches_v4',
+  WALLET: 'fast_troc_wallet_v4',
+  SENT_OFFERS: 'fast_troc_sent_offers_v4',
+  PROFILE: 'fast_troc_profile_v4',
+  HISTORY: 'fast_troc_history_v4'
 };
 
 // Lecture des clés Supabase depuis les Secrets AI Studio (SUPABASE_URL / SUPABASE_ANON_KEY ou VITE_*)
@@ -48,7 +49,7 @@ export const supabaseClient: SupabaseClient | null = isSupabaseConfigured
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 
-// Synchronisation temps réel vers Supabase via @supabase/supabase-js
+// Synchronisation temps réel transparente vers Supabase via @supabase/supabase-js
 export async function syncWeaponToSupabase(weapon: WeaponItem): Promise<boolean> {
   if (!supabaseClient) return false;
   try {
@@ -77,8 +78,8 @@ export async function syncMarketItemToSupabase(item: MarketItem): Promise<boolea
       title: item.title,
       tier: item.tier,
       cash_price: item.cashPrice,
-      distance: item.distance,
-      distance_km: item.distanceKm,
+      distance: item.city,
+      distance_km: 0,
       quartier: item.quartier,
       boosted: item.boosted,
       status: item.status,
@@ -142,47 +143,6 @@ export async function syncHistoryItemToSupabase(entry: ActivityHistoryItem): Pro
   }
 }
 
-// Test en direct et synchronisation complète vers Supabase après exécution du script SQL
-export async function testAndSyncAllToSupabase(
-  weapons: WeaponItem[],
-  market: MarketItem[],
-  matches: MatchRecord[],
-  history: ActivityHistoryItem[]
-): Promise<{ ok: boolean; message: string }> {
-  if (!supabaseClient) {
-    return {
-      ok: false,
-      message: 'Clés SUPABASE_URL ou SUPABASE_ANON_KEY absentes des Secrets.'
-    };
-  }
-  try {
-    const { error: probeError } = await supabaseClient.from('market_items').select('id').limit(1);
-    if (probeError) {
-      return {
-        ok: false,
-        message: `Tables non trouvées (${probeError.message}). Collez d'abord le script SQL dans Supabase -> SQL Editor -> Run.`
-      };
-    }
-
-    await Promise.all([
-      ...weapons.map((w) => syncWeaponToSupabase(w)),
-      ...market.map((m) => syncMarketItemToSupabase(m)),
-      ...matches.map((m) => syncMatchToSupabase(m)),
-      ...history.map((h) => syncHistoryItemToSupabase(h))
-    ]);
-
-    return {
-      ok: true,
-      message: `Synchronisation Supabase réussie (${market.length} annonces, ${weapons.length} armes, ${matches.length} matchs).`
-    };
-  } catch (err: any) {
-    return {
-      ok: false,
-      message: err?.message || 'Erreur lors du test de connexion Supabase.'
-    };
-  }
-}
-
 export async function fetchInitialFromSupabase(): Promise<{
   weapons?: WeaponItem[];
   market?: MarketItem[];
@@ -220,23 +180,28 @@ export async function fetchInitialFromSupabase(): Promise<{
     }
 
     if (!marketRes.error && Array.isArray(marketRes.data) && marketRes.data.length > 0) {
-      result.market = marketRes.data.map((m: any) => ({
-        id: String(m.id),
-        title: String(m.title),
-        tier: m.tier,
-        cashPrice: Number(m.cash_price || 25000),
-        distance: String(m.distance || '1,5 km'),
-        distanceKm: Number(m.distance_km || 1.5),
-        quartier: String(m.quartier || 'Libreville'),
-        boosted: Boolean(m.boosted),
-        status: m.status === 'RESERVED_12H' ? 'RESERVED_12H' : 'AVAILABLE',
-        reservedUntil: m.reserved_until || undefined,
-        owner: String(m.owner || 'Vendeur'),
-        phone: String(m.phone || '241077000000'),
-        image: String(m.image),
-        conditionGrade: m.condition_grade || 'COMME_NEUF',
-        conditionPercent: Number(m.condition_percent ?? 88)
-      }));
+      result.market = marketRes.data.map((m: any) => {
+        const rawCity = String(m.distance || 'Libreville');
+        const resolvedCity: GabonCity = rawCity.includes('km')
+          ? 'Libreville'
+          : (rawCity as GabonCity);
+        return {
+          id: String(m.id),
+          title: String(m.title),
+          tier: m.tier,
+          cashPrice: Number(m.cash_price || 25000),
+          city: resolvedCity,
+          quartier: String(m.quartier || 'Centre'),
+          boosted: Boolean(m.boosted),
+          status: m.status === 'RESERVED_12H' ? 'RESERVED_12H' : 'AVAILABLE',
+          reservedUntil: m.reserved_until || undefined,
+          owner: String(m.owner || 'Vendeur'),
+          phone: String(m.phone || '241077000000'),
+          image: String(m.image),
+          conditionGrade: m.condition_grade || 'COMME_NEUF',
+          conditionPercent: Number(m.condition_percent ?? 88)
+        };
+      });
     }
 
     if (!matchesRes.error && Array.isArray(matchesRes.data) && matchesRes.data.length > 0) {
@@ -244,7 +209,7 @@ export async function fetchInitialFromSupabase(): Promise<{
         id: String(m.id),
         type: m.type === 'INCOMING' ? 'INCOMING' : 'MUTUAL',
         partnerName: String(m.partner_name),
-        partnerQuartier: String(m.partner_quartier),
+        partnerQuartier: String(m.partner_quartier).replace(/\(\d+[.,]?\d*\s*km\)/gi, '').trim(),
         partnerPhone: String(m.partner_phone),
         theirItem: {
           conditionGrade: 'COMME_NEUF',
@@ -335,44 +300,6 @@ export function renderSquare1to1Image(
     img.onerror = () => resolve(sourceDataUrl);
     img.src = sourceDataUrl;
   });
-}
-
-// Télécharger n'importe quelle image au format 1:1 carré PNG UHD (1080×1080)
-export function downloadImage1to1Square(imageSrc: string, title: string): void {
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => {
-    const size = 1080;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.fillStyle = '#0e1015';
-    ctx.fillRect(0, 0, size, size);
-
-    const minSide = Math.min(img.width || size, img.height || size);
-    const sx = ((img.width || size) - minSide) / 2;
-    const sy = ((img.height || size) - minSide) / 2;
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
-
-    const dataUrl = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    const safeName = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-    link.download = `fast-troc-1x1-${safeName || 'produit'}.png`;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-  img.src = imageSrc;
 }
 
 export function loadWeapons(): WeaponItem[] {

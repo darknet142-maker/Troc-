@@ -1,6 +1,6 @@
 {
-  "summary":  "Plan d'implémentation pour la grille stricte des 5 niveaux d'état (Neuf Or 100% à Dégradé Rouge <40%), le Mini-Market de Jetons, le Profil Utilisateur avec historique complet, la barre de navigation fixe à 4 onglets (+ bouton Caméra central) et l'Assistant Supabase clé-en-main avec script SQL prêt à coller.",
-  "updatedAt":  "2026-10-30T21:57:12.106000467Z",
+  "summary":  "Plan d'implémentation pour le moteur de filtrage sémantique et tolérant aux fautes (familles de mots, synonymes, pluriels, accents, fautes de frappe), la signature officielle épurée avec mini logo Boo intégré, et l'espace exclusif dédié aux applications du Groupe Mmedia Universe (\"Découvrez VYBZ\" + futures applications en développement).",
+  "updatedAt":  "2026-10-31T10:04:29.952078259Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

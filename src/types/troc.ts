@@ -1,6 +1,48 @@
 export type ValueTier = 'Tous' | '10k' | '25k' | '50k' | '100k+';
 export type ItemTier = '10k' | '25k' | '50k' | '100k+';
-export type SoulteAmount = 0 | 2000 | 5000 | 10000;
+export type CashTopUpAmount = 0 | 2000 | 5000 | 10000;
+export type SoulteAmount = CashTopUpAmount;
+
+export type MainTab = 'market' | 'shop' | 'matches' | 'profile';
+export type ProfileSubTab = 'history' | 'weapons' | 'apps' | 'help' | 'legal';
+export type LegalSectionId = 'cgu' | 'privacy' | 'about';
+
+export type ItemCategory =
+  | 'Tech & Audio'
+  | 'Téléphones'
+  | 'Gaming'
+  | 'Mode'
+  | 'Maison'
+  | 'Services & Autres';
+
+export type MarketCategoryFilter = 'Toutes' | ItemCategory;
+
+export type ActiveModal =
+  | 'none'
+  | 'add_photo'
+  | 'inspect_item'
+  | 'propose_trade'
+  | 'share_item'
+  | 'cash_buy'
+  | 'ticket_view'
+  | 'incoming_alert'
+  | 'city_selector'
+  | 'market_filter'
+  | 'mmedia_hub'
+  | 'legal_viewer';
+
+export type GabonCity =
+  | 'Libreville'
+  | 'Port-Gentil'
+  | 'Franceville'
+  | 'Oyem'
+  | 'Lambaréné'
+  | 'Mouila'
+  | 'Koulamoutou'
+  | 'Tchibanga'
+  | 'Makokou';
+
+export type CityFilter = 'Toutes les villes' | GabonCity;
 
 export type ConditionGradeId =
   | 'NEUF'
@@ -43,9 +85,10 @@ export interface MarketItem {
   title: string;
   tier: ItemTier;
   cashPrice: number;
-  distance: string;
-  distanceKm: number;
+  city: GabonCity;
   quartier: string;
+  distance?: string;
+  distanceKm?: number;
   boosted: boolean;
   status: 'AVAILABLE' | 'RESERVED_12H';
   reservedUntil?: string;
@@ -54,6 +97,8 @@ export interface MarketItem {
   image: string;
   conditionGrade: ConditionGradeId;
   conditionPercent: number;
+  isOwnListing?: boolean;
+  category?: ItemCategory;
 }
 
 export type MatchStatus =
@@ -80,14 +125,14 @@ export interface MatchRecord {
   myItem: WeaponItem;
   soulte: number;
   soulteDirection: 'NONE' | 'FROM_ME' | 'TO_ME';
-  isCoupeFile: boolean; // Offre prioritaire 500 FCFA
+  isCoupeFile: boolean;
   status: MatchStatus;
   myPaid: boolean;
   theirPaid: boolean;
   pinCode: string;
   pinVerified?: boolean;
   timestamp: string;
-  expiresAt: number; // Epoch ms for 30-min anti-blockage countdown
+  expiresAt: number;
 }
 
 export interface SentOfferInfo {
@@ -114,7 +159,7 @@ export interface ActivityHistoryItem {
   title: string;
   subtitle: string;
   amountLabel: string;
-  badgeColor: 'emerald' | 'amber' | 'orange' | 'sky' | 'red';
+  badgeColor: 'emerald' | 'amber' | 'orange' | 'sky' | 'red' | 'purple';
   pinCode?: string;
   timestamp: string;
   createdAt: number;
@@ -123,18 +168,19 @@ export interface ActivityHistoryItem {
 export interface UserProfile {
   name: string;
   handle: string;
+  city: GabonCity;
   quartier: string;
   phone: string;
   memberSince: string;
-  trustScore: number; // ex: 98%
+  trustScore: number;
   totalVolumeFcfa: number;
 }
 
 export interface WalletMetrics {
-  tokens: number; // 1 Jeton = 300 FCFA
-  boostCredits: number; // Crédits Coupe-File d'avance
-  verifiedTrades: number; // Compteur de remises validées par PIN
-  platformRevenueFcfa: number; // 600F/match + 500F Coupe-File + 5% Cash
+  tokens: number;
+  boostCredits: number;
+  verifiedTrades: number;
+  platformRevenueFcfa: number;
   coupeFileCount: number;
   cashCommissionFcfa: number;
   blockedGhosts: string[];
@@ -149,4 +195,95 @@ export interface TokenPackOffer {
   priceFcfa: number;
   badge?: string;
   popular?: boolean;
+}
+
+export function deriveTierFromPrice(priceFcfa: number): ItemTier {
+  if (priceFcfa <= 17500) return '10k';
+  if (priceFcfa <= 37500) return '25k';
+  if (priceFcfa <= 75000) return '50k';
+  return '100k+';
+}
+
+export function formatCompactFcfa(priceFcfa: number, fallbackTier?: ItemTier): string {
+  if (!priceFcfa || priceFcfa <= 0) return fallbackTier || '25k';
+  return `${priceFcfa.toLocaleString('fr-FR')} F`;
+}
+
+export const MARKET_CATEGORIES: MarketCategoryFilter[] = [
+  'Toutes',
+  'Tech & Audio',
+  'Téléphones',
+  'Gaming',
+  'Mode',
+  'Maison',
+  'Services & Autres'
+];
+
+export function inferItemCategory(
+  title: string,
+  explicitCategory?: ItemCategory
+): ItemCategory {
+  if (explicitCategory) return explicitCategory;
+  const lower = title.toLowerCase();
+  if (
+    lower.includes('iphone') ||
+    lower.includes('smartphone') ||
+    lower.includes('samsung') ||
+    lower.includes('galaxy') ||
+    lower.includes('tablette') ||
+    lower.includes('ipad')
+  ) {
+    return 'Téléphones';
+  }
+  if (
+    lower.includes('ps4') ||
+    lower.includes('ps5') ||
+    lower.includes('playstation') ||
+    lower.includes('manette') ||
+    lower.includes('xbox') ||
+    lower.includes('nintendo') ||
+    lower.includes('console') ||
+    lower.includes('jeu')
+  ) {
+    return 'Gaming';
+  }
+  if (
+    lower.includes('sac') ||
+    lower.includes('sneakers') ||
+    lower.includes('nike') ||
+    lower.includes('chaussure') ||
+    lower.includes('montre') ||
+    lower.includes('bijou') ||
+    lower.includes('veste') ||
+    lower.includes('mode')
+  ) {
+    return 'Mode';
+  }
+  if (
+    lower.includes('four') ||
+    lower.includes('micro-ondes') ||
+    lower.includes('blender') ||
+    lower.includes('mixeur') ||
+    lower.includes('café') ||
+    lower.includes('expresso') ||
+    lower.includes('électro') ||
+    lower.includes('maison')
+  ) {
+    return 'Maison';
+  }
+  if (
+    lower.includes('enceinte') ||
+    lower.includes('micro') ||
+    lower.includes('ring light') ||
+    lower.includes('écran') ||
+    lower.includes('moniteur') ||
+    lower.includes('casque') ||
+    lower.includes('clavier') ||
+    lower.includes('canon') ||
+    lower.includes('audio') ||
+    lower.includes('tech')
+  ) {
+    return 'Tech & Audio';
+  }
+  return 'Services & Autres';
 }

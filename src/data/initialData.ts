@@ -3,6 +3,7 @@ import {
   ActivityHistoryItem,
   ConditionGradeId,
   ConditionGradeSpec,
+  GabonCity,
   MarketItem,
   MatchRecord,
   TokenPackOffer,
@@ -10,6 +11,21 @@ import {
   WalletMetrics,
   WeaponItem
 } from '../types/troc';
+
+// ============================================================================
+// LES 9 CAPITALES PROVINCIALES DU GABON
+// ============================================================================
+export const GABON_CITIES: { name: GabonCity; province: string }[] = [
+  { name: 'Libreville', province: 'Estuaire' },
+  { name: 'Port-Gentil', province: 'Ogooué-Maritime' },
+  { name: 'Franceville', province: 'Haut-Ogooué' },
+  { name: 'Oyem', province: 'Woleu-Ntem' },
+  { name: 'Lambaréné', province: 'Moyen-Ogooué' },
+  { name: 'Mouila', province: 'Ngounié' },
+  { name: 'Koulamoutou', province: 'Ogooué-Lolo' },
+  { name: 'Tchibanga', province: 'Nyanga' },
+  { name: 'Makokou', province: 'Ogooué-Ivindo' }
+];
 
 // ============================================================================
 // GRILLE D'ÉTAT RÉALISTE, STRICTE ET SÉVÈRE (5 NIVEAUX TERRAIN)
@@ -112,13 +128,13 @@ export const CONDITION_GRADE_MAP: Record<ConditionGradeId, ConditionGradeSpec> =
 
 export function getConditionSpec(grade?: ConditionGradeId): ConditionGradeSpec {
   if (!grade || !CONDITION_GRADE_MAP[grade]) {
-    return CONDITION_GRADES[1]; // Comme neuf par défaut
+    return CONDITION_GRADES[1];
   }
   return CONDITION_GRADE_MAP[grade];
 }
 
 // ============================================================================
-// INVENTAIRE INITIAL DE L'UTILISATEUR ("MES ARMES") AVEC ÉTAT RÉALISTE
+// INVENTAIRE INITIAL DE L'UTILISATEUR ("MES OBJETS") AVEC ÉTAT RÉALISTE
 // ============================================================================
 export const INITIAL_WEAPONS: WeaponItem[] = [
   {
@@ -126,7 +142,7 @@ export const INITIAL_WEAPONS: WeaponItem[] = [
     title: 'Casque Pro',
     tier: '25k',
     tierValue: 25000,
-    emoji: '📷',
+    emoji: '🎧',
     image: STUDIO_VISUALS.headphones,
     conditionGrade: 'COMME_NEUF',
     conditionPercent: 89
@@ -164,7 +180,7 @@ export const INITIAL_WEAPONS: WeaponItem[] = [
 ];
 
 // ============================================================================
-// CATALOGUE DU MARCHÉ LIBREVILLE AVEC LES 5 NIVEAUX D'ÉTAT
+// CATALOGUE DU MARCHÉ PAR VILLE (ZÉRO KM)
 // ============================================================================
 export const INITIAL_MARKET: MarketItem[] = [
   {
@@ -172,8 +188,7 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Montre Connectée',
     tier: '25k',
     cashPrice: 27000,
-    distance: '1,2 km',
-    distanceKm: 1.2,
+    city: 'Libreville',
     quartier: 'Louis',
     boosted: false,
     status: 'AVAILABLE',
@@ -188,8 +203,7 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Enceinte Bluetooth',
     tier: '25k',
     cashPrice: 25000,
-    distance: '2,5 km',
-    distanceKm: 2.5,
+    city: 'Libreville',
     quartier: 'Glass',
     boosted: false,
     status: 'AVAILABLE',
@@ -204,9 +218,8 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Micro Sans Fil',
     tier: '25k',
     cashPrice: 24000,
-    distance: '0,8 km',
-    distanceKm: 0.8,
-    quartier: 'Montagne Sainte',
+    city: 'Port-Gentil',
+    quartier: 'Bord de Mer',
     boosted: true,
     status: 'AVAILABLE',
     owner: 'Junior Film',
@@ -220,9 +233,8 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Four Micro-ondes',
     tier: '25k',
     cashPrice: 28000,
-    distance: '3,1 km',
-    distanceKm: 3.1,
-    quartier: 'Nzeng-Ayong',
+    city: 'Franceville',
+    quartier: 'Potos',
     boosted: false,
     status: 'AVAILABLE',
     owner: 'Amina K.',
@@ -236,9 +248,8 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Sac à Dos Imperméable Tech',
     tier: '10k',
     cashPrice: 12000,
-    distance: '1,5 km',
-    distanceKm: 1.5,
-    quartier: 'Akébé',
+    city: 'Oyem',
+    quartier: 'Centre',
     boosted: false,
     status: 'AVAILABLE',
     owner: 'Kevin B.',
@@ -252,8 +263,7 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Ring Light LED + Trépied 2m',
     tier: '10k',
     cashPrice: 11000,
-    distance: '0,9 km',
-    distanceKm: 0.9,
+    city: 'Libreville',
     quartier: 'Centre-Ville',
     boosted: true,
     status: 'AVAILABLE',
@@ -268,9 +278,8 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'Écran Moniteur 27" Full HD',
     tier: '50k',
     cashPrice: 55000,
-    distance: '2,0 km',
-    distanceKm: 2.0,
-    quartier: 'Charbonnages',
+    city: 'Lambaréné',
+    quartier: 'Isaac',
     boosted: false,
     status: 'AVAILABLE',
     owner: 'David T.',
@@ -284,8 +293,7 @@ export const INITIAL_MARKET: MarketItem[] = [
     title: 'PlayStation 4 Slim + 2 Jeux',
     tier: '100k+',
     cashPrice: 115000,
-    distance: '4,2 km',
-    distanceKm: 4.2,
+    city: 'Libreville',
     quartier: 'Angondjé',
     boosted: true,
     status: 'AVAILABLE',
@@ -302,7 +310,7 @@ export const INITIAL_MATCHES: MatchRecord[] = [
     id: 'match-1',
     type: 'INCOMING',
     partnerName: 'Franck M.',
-    partnerQuartier: 'Batterie IV (1,4 km)',
+    partnerQuartier: 'Libreville • Batterie IV',
     partnerPhone: '241077998877',
     theirItem: {
       title: 'Tablette Graphique Wacom',
@@ -326,7 +334,7 @@ export const INITIAL_MATCHES: MatchRecord[] = [
     id: 'match-2',
     type: 'MUTUAL',
     partnerName: 'Clarisse A.',
-    partnerQuartier: 'Oloumi (2,1 km)',
+    partnerQuartier: 'Libreville • Oloumi',
     partnerPhone: '241066123987',
     theirItem: {
       title: 'Machine à Café Expresso',
@@ -350,7 +358,7 @@ export const INITIAL_MATCHES: MatchRecord[] = [
     id: 'match-3',
     type: 'MUTUAL',
     partnerName: 'Lionel K.',
-    partnerQuartier: 'Awendjé (1,9 km)',
+    partnerQuartier: 'Libreville • Awendjé',
     partnerPhone: '241074889911',
     theirItem: {
       title: 'Clavier Mécanique RGB',
@@ -374,13 +382,13 @@ export const INITIAL_MATCHES: MatchRecord[] = [
 ];
 
 // ============================================================================
-// MINI-MARKET DE JETONS & PACKS (1 JETON = 300 FCFA)
+// MINI-MARKET DE JETONS & PACKS (1 JETON = 300 FCFA = 1 TRANSACTION CONCLUE)
 // ============================================================================
 export const TOKEN_PACKS: TokenPackOffer[] = [
   {
     id: 'pack-1',
-    title: '1 Jeton Déblocage Direct',
-    subtitle: 'Idéal pour débloquer immédiatement un match validé sur WhatsApp',
+    title: '1 Jeton de Transaction',
+    subtitle: 'Idéal pour conclure un échange et débloquer le contact WhatsApp',
     tokensCount: 1,
     bonusTokens: 0,
     priceFcfa: 300
@@ -388,7 +396,7 @@ export const TOKEN_PACKS: TokenPackOffer[] = [
   {
     id: 'pack-5',
     title: 'Pack Quartier • 5 Jetons',
-    subtitle: 'Le pack standard pour enchaîner vos trocs de la semaine sans attente',
+    subtitle: 'Le pack standard pour conclure 5 transactions dans votre ville',
     tokensCount: 5,
     bonusTokens: 0,
     priceFcfa: 1500,
@@ -398,7 +406,7 @@ export const TOKEN_PACKS: TokenPackOffer[] = [
   {
     id: 'pack-11',
     title: 'Pack Vitesse • 10 + 1 Offert',
-    subtitle: '11 Jetons au prix de 10 (Économisez 300 FCFA sur vos déblocages)',
+    subtitle: '11 Jetons au prix de 10 (Économisez 300 FCFA sur vos échanges)',
     tokensCount: 10,
     bonusTokens: 1,
     priceFcfa: 3000,
@@ -407,7 +415,7 @@ export const TOKEN_PACKS: TokenPackOffer[] = [
   {
     id: 'pack-29',
     title: 'Pack Commerçant Pro • 25 + 4 Offerts',
-    subtitle: '29 Jetons pour les gros échangeurs et revendeurs actifs de Libreville',
+    subtitle: '29 Jetons pour les gros échangeurs et vendeurs réguliers',
     tokensCount: 25,
     bonusTokens: 4,
     priceFcfa: 7500,
@@ -417,8 +425,9 @@ export const TOKEN_PACKS: TokenPackOffer[] = [
 
 export const INITIAL_PROFILE: UserProfile = {
   name: 'Jean-Marc Ndong',
-  handle: '@jeanmarc_lbv',
-  quartier: 'Louis / Batterie IV (Libreville)',
+  handle: '@jeanmarc_gabon',
+  city: 'Libreville',
+  quartier: 'Louis / Batterie IV',
   phone: '241077889900',
   memberSince: 'Octobre 2026',
   trustScore: 98,
@@ -430,8 +439,8 @@ export const INITIAL_HISTORY: ActivityHistoryItem[] = [
     id: 'hist-1',
     type: 'MATCH_UNLOCKED',
     title: 'Match débloqué avec Lionel K.',
-    subtitle: 'Clavier Mécanique RGB (Neuf 100%) ↔ Casque Pro (+5k FCFA)',
-    amountLabel: '-1 Jeton (300F)',
+    subtitle: 'Clavier Mécanique RGB (100%) ↔ Casque Pro (+5k FCFA)',
+    amountLabel: '-1 Jeton',
     badgeColor: 'emerald',
     pinCode: '7351',
     timestamp: 'Il y a 25 min',
@@ -441,8 +450,8 @@ export const INITIAL_HISTORY: ActivityHistoryItem[] = [
     id: 'hist-2',
     type: 'TOKEN_PURCHASE',
     title: 'Achat Pack Quartier (Mini-Market)',
-    subtitle: 'Crédit de +5 Jetons de Troc via Airtel Money',
-    amountLabel: '+5 Jetons (1 500F)',
+    subtitle: 'Crédit de +5 Jetons via Airtel Money',
+    amountLabel: '+5 Jetons',
     badgeColor: 'amber',
     timestamp: 'Hier à 18:40',
     createdAt: Date.now() - 18 * 3600 * 1000
@@ -450,8 +459,8 @@ export const INITIAL_HISTORY: ActivityHistoryItem[] = [
   {
     id: 'hist-3',
     type: 'TROC_PIN_VERIFIED',
-    title: 'Échange terrain validé avec Cédric B.',
-    subtitle: 'Objectif Canon 50mm (Comme neuf 88%) • Remise Point Relais Glass',
+    title: 'Échange validé avec Cédric B.',
+    subtitle: 'Objectif Canon 50mm (88%) • Libreville (Glass)',
     amountLabel: 'PIN 8210 ✓',
     badgeColor: 'emerald',
     pinCode: '8210',
@@ -463,7 +472,7 @@ export const INITIAL_HISTORY: ActivityHistoryItem[] = [
     type: 'TOKEN_REFUND_30M',
     title: 'Garantie Anti-Blocage 30 min',
     subtitle: 'Désistement du partenaire • Jeton automatiquement recrédité',
-    amountLabel: '+1 Jeton Gratuit',
+    amountLabel: '+1 Jeton',
     badgeColor: 'sky',
     timestamp: 'Il y a 3 jours',
     createdAt: Date.now() - 72 * 3600 * 1000
@@ -510,7 +519,7 @@ export const PRESET_PHOTOS = [
 export const INCOMING_CHALLENGERS = [
   {
     partnerName: 'Brice Ndong',
-    partnerQuartier: 'Lalala à droite (1,1 km)',
+    partnerQuartier: 'Libreville • Lalala',
     partnerPhone: '241077441122',
     theirItem: {
       title: 'Enceinte JBL Flip 6 Rouge',
@@ -524,7 +533,7 @@ export const INCOMING_CHALLENGERS = [
   },
   {
     partnerName: 'Prisca Mba',
-    partnerQuartier: 'Haut de Gué-Gué (1,8 km)',
+    partnerQuartier: 'Libreville • Gué-Gué',
     partnerPhone: '241066558899',
     theirItem: {
       title: 'Montre Connectée Sport GPS',
@@ -538,7 +547,7 @@ export const INCOMING_CHALLENGERS = [
   },
   {
     partnerName: 'Ulrich Obiang',
-    partnerQuartier: 'IAI / Golf (2,3 km)',
+    partnerQuartier: 'Port-Gentil • Centre',
     partnerPhone: '241074119933',
     theirItem: {
       title: 'Micro Cravate Sans Fil Pro',
@@ -551,103 +560,3 @@ export const INCOMING_CHALLENGERS = [
     isCoupeFile: true
   }
 ];
-
-// ============================================================================
-// SCRIPT SQL SUPABASE COMPLET (TABLES + COLONNES D'ÉTAT + PROFIL + RLS)
-// ============================================================================
-export const SUPABASE_SCHEMA_SQL = `-- ============================================================================
--- SCRIPT D'INITIALISATION SUPABASE POUR FAST-TROC LIBREVILLE (UHD)
--- À coller dans : Dashboard Supabase -> SQL Editor -> + New query -> Run
--- ============================================================================
-
--- 1. Table de vos objets ("Mes Armes") avec grille d'état (Neuf 100% à Dégradé <40%)
-CREATE TABLE IF NOT EXISTS public.weapons (
-  id TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  tier TEXT NOT NULL CHECK (tier IN ('10k', '25k', '50k', '100k+')),
-  tier_value INTEGER NOT NULL,
-  emoji TEXT DEFAULT '📷',
-  image TEXT NOT NULL,
-  condition_grade TEXT DEFAULT 'COMME_NEUF',
-  condition_percent INTEGER DEFAULT 88,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Ajout sécurisé des colonnes d'état si la table existait déjà
-ALTER TABLE public.weapons ADD COLUMN IF NOT EXISTS condition_grade TEXT DEFAULT 'COMME_NEUF';
-ALTER TABLE public.weapons ADD COLUMN IF NOT EXISTS condition_percent INTEGER DEFAULT 88;
-
--- 2. Table du catalogue Marché Libreville
-CREATE TABLE IF NOT EXISTS public.market_items (
-  id TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  tier TEXT NOT NULL CHECK (tier IN ('10k', '25k', '50k', '100k+')),
-  cash_price INTEGER NOT NULL,
-  distance TEXT NOT NULL,
-  distance_km NUMERIC(4,1) NOT NULL,
-  quartier TEXT NOT NULL,
-  boosted BOOLEAN DEFAULT FALSE,
-  status TEXT DEFAULT 'AVAILABLE' CHECK (status IN ('AVAILABLE', 'RESERVED_12H')),
-  reserved_until TEXT,
-  owner TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  image TEXT NOT NULL,
-  condition_grade TEXT DEFAULT 'COMME_NEUF',
-  condition_percent INTEGER DEFAULT 88,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE public.market_items ADD COLUMN IF NOT EXISTS condition_grade TEXT DEFAULT 'COMME_NEUF';
-ALTER TABLE public.market_items ADD COLUMN IF NOT EXISTS condition_percent INTEGER DEFAULT 88;
-
--- 3. Table des Matchs & Accords Action-Réaction
-CREATE TABLE IF NOT EXISTS public.matches (
-  id TEXT PRIMARY KEY,
-  type TEXT NOT NULL,
-  partner_name TEXT NOT NULL,
-  partner_quartier TEXT NOT NULL,
-  partner_phone TEXT NOT NULL,
-  their_item JSONB NOT NULL,
-  my_item JSONB NOT NULL,
-  soulte INTEGER DEFAULT 0,
-  soulte_direction TEXT DEFAULT 'NONE',
-  is_coupe_file BOOLEAN DEFAULT FALSE,
-  status TEXT NOT NULL,
-  my_paid BOOLEAN DEFAULT FALSE,
-  their_paid BOOLEAN DEFAULT FALSE,
-  pin_code CHAR(4) NOT NULL,
-  pin_verified BOOLEAN DEFAULT FALSE,
-  expires_at BIGINT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 4. Table de l'Historique d'Activité & Mini-Market Jetons
-CREATE TABLE IF NOT EXISTS public.activity_history (
-  id TEXT PRIMARY KEY,
-  type TEXT NOT NULL,
-  title TEXT NOT NULL,
-  subtitle TEXT NOT NULL,
-  amount_label TEXT NOT NULL,
-  badge_color TEXT DEFAULT 'emerald',
-  pin_code TEXT,
-  timestamp_label TEXT NOT NULL,
-  created_at BIGINT NOT NULL
-);
-
--- 5. Activation RLS + Politiques d'accès pour la clé SUPABASE_ANON_KEY
-ALTER TABLE public.weapons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.market_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.matches ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.activity_history ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Public full access weapons" ON public.weapons;
-CREATE POLICY "Public full access weapons" ON public.weapons FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public full access market_items" ON public.market_items;
-CREATE POLICY "Public full access market_items" ON public.market_items FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public full access matches" ON public.matches;
-CREATE POLICY "Public full access matches" ON public.matches FOR ALL USING (true) WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Public full access activity_history" ON public.activity_history;
-CREATE POLICY "Public full access activity_history" ON public.activity_history FOR ALL USING (true) WITH CHECK (true);`;
